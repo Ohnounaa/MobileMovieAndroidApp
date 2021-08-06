@@ -76,15 +76,16 @@ class HomeFragment : Fragment() {
         }
 
     }
-    inner class ViewHolder(private val binding: MovieViewHolderBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: MovieViewHolderBinding):
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Movie) {
             binding.apply {
                 movieTitle.text = item.title
+                movieTitle.bringToFront()
                 executePendingBindings()
             }
         }
     }
-
 }
 
 
