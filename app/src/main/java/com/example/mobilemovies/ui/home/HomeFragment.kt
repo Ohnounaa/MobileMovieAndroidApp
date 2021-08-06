@@ -8,6 +8,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.mobilemovies.Data.Movie
 import com.example.mobilemovies.R
 import com.example.mobilemovies.databinding.FragmentHomeBinding
 
@@ -29,12 +32,21 @@ class HomeFragment : Fragment() {
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        binding.textHome
+
+        homeViewModel.currentMovies?.observe(
+            viewLifecycleOwner, {
+                    movies -> binding.nowPlayingMovieCollection.apply{
+                run {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = MovieAdapter(movies)
+                }
+            }
+            }
+        )
         return root
     }
 
@@ -42,4 +54,23 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
+    private inner class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MovieViewHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+
+        }
+
+        override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+
+        }
+
+        override fun getItemCount(): Int {
+            return movies.size
+        }
+
+    }
 }
+
+class MovieViewHolder(private val binding:FragmentHomeBinding): RecyclerView.ViewHolder(binding.root) {}
+
