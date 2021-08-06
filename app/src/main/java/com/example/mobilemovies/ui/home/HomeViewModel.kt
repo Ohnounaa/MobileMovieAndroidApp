@@ -17,9 +17,9 @@ class HomeViewModel : ViewModel() {
         getNowPlayingMovies("1")
     }
 
-    fun getNowPlayingMovies(pageNumber: String)  {
+    private fun getNowPlayingMovies(pageNumber: String)  {
         viewModelScope.launch {
-            val moviesAPIData = repository.getNowPlayingMoviesFromAPI("1")
+            val moviesAPIData = repository.getNowPlayingMoviesFromAPI(pageNumber)
             currentMovies = moviesAPIData
         }
     }

@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobilemovies.Data.Movie
-import com.example.mobilemovies.R
 import com.example.mobilemovies.databinding.FragmentHomeBinding
+import com.example.mobilemovies.databinding.MovieViewHolderBinding
 
 class HomeFragment : Fragment() {
 
@@ -34,12 +33,13 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
+        val recyclerView: RecyclerView = binding.nowPlayingMovieCollection
 
         binding.textHome
 
         homeViewModel.currentMovies?.observe(
             viewLifecycleOwner, {
-                    movies -> binding.nowPlayingMovieCollection.apply{
+                    movies -> recyclerView.apply{
                 run {
                     layoutManager = LinearLayoutManager(context)
                     adapter = MovieAdapter(movies)
@@ -56,13 +56,19 @@ class HomeFragment : Fragment() {
     }
 
 
-    private inner class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MovieViewHolder>(){
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    private inner class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<ViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+          val binding = MovieViewHolderBinding.inflate(layoutInflater)
+            return ViewHolder(binding)
 
+           // val v = layoutInflater.inflate(R.layout.movie_view_holder,
+        // parent,
+        // false)
+          //  return ViewHolder(v)
         }
 
-        override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.bind(movies[position])
         }
 
         override fun getItemCount(): Int {
@@ -70,7 +76,16 @@ class HomeFragment : Fragment() {
         }
 
     }
+    inner class ViewHolder(private val binding: MovieViewHolderBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Movie) {
+            binding.apply {
+                movieTitle.text = item.title
+                executePendingBindings()
+            }
+        }
+    }
+
 }
 
-class MovieViewHolder(private val binding:FragmentHomeBinding): RecyclerView.ViewHolder(binding.root) {}
+
 
